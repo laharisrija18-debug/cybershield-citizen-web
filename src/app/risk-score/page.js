@@ -61,7 +61,7 @@ export default function RiskScore() {
 
   if (notFound) {
     return (
-      <main className="min-h-screen bg-slate-950 text-white px-6 py-24 flex items-center justify-center">
+      <main className="min-h-screen text-white px-6 py-24 flex items-center justify-center">
         <div className="mx-auto max-w-md text-center">
           <h1 className="text-3xl font-bold mb-3">No results yet</h1>
           <p className="text-slate-400 mb-8">
@@ -80,7 +80,7 @@ export default function RiskScore() {
 
   if (!result) {
     return (
-      <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+      <main className="min-h-screen text-white flex items-center justify-center">
         <p className="text-slate-400">Loading your results...</p>
       </main>
     );
@@ -91,7 +91,7 @@ export default function RiskScore() {
   const recommendations = getRecommendations(result.triggeredCategories ?? []);
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white px-6 py-16">
+    <main className="min-h-screen text-white px-6 py-16">
       <div className="mx-auto max-w-xl text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

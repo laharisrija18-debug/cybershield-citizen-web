@@ -28,7 +28,7 @@ export default function Checklist() {
   const answeredCount = Object.keys(answers).length;
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white px-6 py-16">
+    <main className="min-h-screen text-white px-6 py-16">
       <div className="mx-auto max-w-2xl">
         <h1 className="text-4xl font-bold mb-2">Cyber Safety Checklist</h1>
         <p className="text-slate-400 mb-2">

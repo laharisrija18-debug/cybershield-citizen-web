@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
+    <main className="min-h-screen text-white">
       <section className="relative overflow-hidden px-6 pt-24 pb-20 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

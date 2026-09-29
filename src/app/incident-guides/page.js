@@ -27,7 +27,7 @@ export default function IncidentGuides() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white px-6 py-16">
+    <main className="min-h-screen text-white px-6 py-16">
       <div className="mx-auto max-w-3xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -40,7 +40,7 @@ export default function IncidentGuides() {
           </div>
           <h1 className="text-4xl font-bold mb-3">Incident Guides</h1>
           <p className="text-slate-400 max-w-xl mx-auto">
-            Think something already happened? Pick what's going on below for clear, step-by-step
+            Think something already happened? Pick what&apos;s going on below for clear, step-by-step
             instructions on what to do right now.
           </p>
         </motion.div>

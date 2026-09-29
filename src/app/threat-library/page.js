@@ -33,7 +33,7 @@ export default function ThreatLibrary() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white px-6 py-16">
+    <main className="min-h-screen text-white px-6 py-16">
       <div className="mx-auto max-w-3xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
