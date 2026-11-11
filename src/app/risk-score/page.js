@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ShieldCheck, ShieldAlert, ShieldX, ExternalLink } from "lucide-react";
+import { ShieldCheck, ShieldAlert, ShieldX, ArrowRight } from "lucide-react";
 import { getRecommendations } from "../lib/recommendations";
 
 const LEVEL_STYLES = {
@@ -35,11 +35,26 @@ const SEVERITY_STYLES = {
   Medium: "bg-amber-950/60 text-amber-300 border-amber-800",
 };
 
-function formatCategoryLabel(category) {
-  return category
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+const LEVELS = Object.keys(LEVEL_STYLES);
+
+// sessionStorage can be edited by the user, so only accept the exact shape the checklist saves.
+function parseResult(raw) {
+  try {
+    const data = JSON.parse(raw);
+    if (
+      data &&
+      Number.isInteger(data.score) &&
+      Number.isInteger(data.totalQuestions) &&
+      data.totalQuestions > 0 &&
+      data.score >= 0 &&
+      data.score <= data.totalQuestions &&
+      LEVELS.includes(data.level) &&
+      Array.isArray(data.triggeredCategories)
+    ) {
+      return data;
+    }
+  } catch {}
+  return null;
 }
 
 export default function RiskScore() {
@@ -47,16 +62,9 @@ export default function RiskScore() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    const raw = sessionStorage.getItem("riskResult");
-    if (!raw) {
-      setNotFound(true);
-      return;
-    }
-    try {
-      setResult(JSON.parse(raw));
-    } catch {
-      setNotFound(true);
-    }
+    const parsed = parseResult(sessionStorage.getItem("riskResult"));
+    if (parsed) setResult(parsed);
+    else setNotFound(true);
   }, []);
 
   if (notFound) {
@@ -86,7 +94,7 @@ export default function RiskScore() {
     );
   }
 
-  const style = LEVEL_STYLES[result.level] ?? LEVEL_STYLES["Medium Risk"];
+  const style = LEVEL_STYLES[result.level];
   const Icon = style.icon;
   const recommendations = getRecommendations(result.triggeredCategories ?? []);
 
@@ -133,7 +141,7 @@ export default function RiskScore() {
                   className="rounded-xl border border-slate-800 bg-slate-900 p-5"
                 >
                   <div className="flex items-center justify-between gap-3 mb-2">
-                    <h3 className="font-semibold">{formatCategoryLabel(rec.category)}</h3>
+                    <h3 className="font-semibold">{rec.label}</h3>
                     <span
                       className={`shrink-0 rounded-full border px-3 py-0.5 text-xs font-semibold ${
                         SEVERITY_STYLES[rec.severity] ?? SEVERITY_STYLES.Medium
@@ -144,14 +152,13 @@ export default function RiskScore() {
                   </div>
                   <p className="text-sm text-slate-400 mb-3">{rec.whyItMatters}</p>
                   <p className="text-sm text-slate-200 mb-3">{rec.action}</p>
-                  <a
-                    href={rec.resource}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    href={`/threat-library#${rec.category}`}
                     className="inline-flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300 transition-colors"
                   >
-                    Learn more <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
+                    Learn more<span className="sr-only"> about {rec.label}</span>
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </Link>
                 </div>
               ))}
             </div>

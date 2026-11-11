@@ -60,6 +60,8 @@ export default function IncidentGuides() {
               >
                 <button
                   onClick={() => toggle(incident.id)}
+                  aria-expanded={isOpen}
+                  aria-controls={`${incident.id}-panel`}
                   className="w-full flex items-center gap-4 p-5 text-left hover:bg-slate-800/50 transition-colors"
                 >
                   <div className="shrink-0 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-800">
@@ -79,6 +81,7 @@ export default function IncidentGuides() {
                 <AnimatePresence initial={false}>
                   {isOpen && (
                     <motion.div
+                      id={`${incident.id}-panel`}
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}

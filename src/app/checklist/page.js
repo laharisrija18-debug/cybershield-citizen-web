@@ -47,11 +47,15 @@ export default function Checklist() {
               transition={{ duration: 0.3, delay: i * 0.03 }}
               className="rounded-xl border border-slate-800 bg-slate-900 p-5"
             >
-              <p className="mb-3 font-medium">{q.text}</p>
-              <div className="flex gap-3">
+              <p id={`q${q.id}-text`} className="mb-3 font-medium">
+                {q.text}
+              </p>
+              <div role="group" aria-labelledby={`q${q.id}-text`} className="flex gap-3">
                 {[true, false].map((val) => (
                   <button
                     key={String(val)}
+                    type="button"
+                    aria-pressed={answers[q.id] === val}
                     onClick={() => handleAnswer(q.id, val)}
                     className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors ${
                       answers[q.id] === val
@@ -67,11 +71,14 @@ export default function Checklist() {
           ))}
         </div>
 
-        {error && (
-          <p className="mt-6 text-red-400">Please answer all questions before submitting.</p>
-        )}
+        <p role="alert" className="mt-6 text-red-400 empty:hidden">
+          {error
+            ? `Please answer all questions before submitting (${QUESTIONS.length - answeredCount} left).`
+            : ""}
+        </p>
 
         <button
+          type="button"
           onClick={handleSubmit}
           className="mt-8 w-full rounded-full bg-blue-600 py-3 font-semibold hover:bg-blue-500 transition-colors"
         >
