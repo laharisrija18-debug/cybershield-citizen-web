@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
@@ -27,6 +27,21 @@ const SEVERITY_STYLES = {
 
 export default function ThreatLibrary() {
   const [openCategory, setOpenCategory] = useState(null);
+
+  // Open the entry named in the URL hash, e.g. /threat-library#phishing_smishing from the results page
+  useEffect(() => {
+    const openFromHash = () => {
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      if (!THREATS.some((t) => t.category === id)) return;
+      setOpenCategory(id);
+      requestAnimationFrame(() =>
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })
+      );
+    };
+    openFromHash();
+    window.addEventListener("hashchange", openFromHash);
+    return () => window.removeEventListener("hashchange", openFromHash);
+  }, []);
 
   const toggle = (category) => {
     setOpenCategory((prev) => (prev === category ? null : category));
@@ -59,13 +74,16 @@ export default function ThreatLibrary() {
             return (
               <motion.div
                 key={threat.category}
+                id={threat.category}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: i * 0.04 }}
-                className="rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden"
+                className="scroll-mt-24 rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden"
               >
                 <button
                   onClick={() => toggle(threat.category)}
+                  aria-expanded={isOpen}
+                  aria-controls={`${threat.category}-panel`}
                   className="w-full flex items-center gap-4 p-5 text-left hover:bg-slate-800/50 transition-colors"
                 >
                   <div className="shrink-0 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-800">
@@ -94,6 +112,7 @@ export default function ThreatLibrary() {
                 <AnimatePresence initial={false}>
                   {isOpen && (
                     <motion.div
+                      id={`${threat.category}-panel`}
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
